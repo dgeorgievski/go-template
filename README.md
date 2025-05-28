@@ -10,9 +10,9 @@ A demo of best DevSecOps practices with focus on automation, collaboration, secu
 
 4. [Kind Kubernetes](https://kind.sigs.k8s.io/) 
 
-## Build hello application
+## Build ${{ values.name }} application
 
-Clone hello repository. 
+Clone ${{ values.name }} repository. 
 
 ```sh
 > git clone git@github.com:altimetrik-digital-enablement-demo-hub/${{ values.name }}.git
@@ -26,12 +26,12 @@ Build the binary. TAG env variable sets the application version. If not specifie
 Build availalbe at ./bin/${{ values.name }}
 
 > ./bin/${{ values.name }} version
-hello version
+${{ values.name }} version
   version: 0.0.16
   commit: 1de9255
 ```
 
-## Build hello container image
+## Build ${{ values.name }} container image
 
 ```sh
 $ make docker-build
@@ -50,9 +50,10 @@ docker build \
 ```
 
 Test the new container image
+
 ```sh
-$ docker run --rm -ti ${{ values.owner }}/${{ values.name }}:0.0.16 /hello version
-hello version
+$ docker run --rm -ti ${{ values.owner }}/${{ values.name }}:0.0.16 /${{ values.name }} version
+${{ values.name }} version
   version: 0.0.16
   commit: 1de9255
 ```
@@ -63,89 +64,89 @@ hello version
 
 kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
 
-Create a local `hello` kind cluster.
+Create a local `${{ values.name }}` kind cluster.
 
 ```sh
-$ kind create cluster --name hello
+$ kind create cluster --name ${{ values.name }}
 $ kind get clusters
-hello
+${{ values.name }}
 ```
 
-Upload the dsocker image to the `hello` kind cluster.
+Upload the dsocker image to the `${{ values.name }}` kind cluster.
 
 ```sh
 $ make kind-docker-upload
 
 # or, manually
-$ kind --name hello load docker-image ${{ values.owner }}/${{ values.name }}:0.0.16 
+$ kind --name ${{ values.name }} load docker-image ${{ values.owner }}/${{ values.name }}:0.0.16 
 ```
 
-Ensure `hello` container image is set to correct version in `deploy/manifests/deployment.yaml` manifest file.
+Ensure `${{ values.name }}` container image is set to correct version in `deploy/manifests/deployment.yaml` manifest file.
 
 ```yaml
  spec:
-    serviceAccountName: hello
+    serviceAccountName: ${{ values.name }}
     containers:
-    - name: hello
+    - name: ${{ values.name }}
       image: ${{ values.owner }}/${{ values.name }}:0.0.16
 ```
 
-Create `hello` namespace
+Create `${{ values.name }}` namespace
 
 ```sh
-$ kubectl create ns hello
-namespace/hello created
+$ kubectl create ns ${{ values.name }}
+namespace/${{ values.name }} created
 ```
 
-Deploy `hello` app in the newly created namespace
+Deploy `${{ values.name }}` app in the newly created namespace
 
 ```sh
 $ kubectl create -f deploy/manifests
-deployment.apps/hello created
-serviceaccount/hello created
-service/hello created
+deployment.apps/${{ values.name }} created
+serviceaccount/${{ values.name }} created
+service/${{ values.name }} created
 
-$ kubectl get all -n hello
+$ kubectl get all -n ${{ values.name }}
 NAME                     READY   STATUS    RESTARTS   AGE
-kubectl get all -n hello
+kubectl get all -n ${{ values.name }}
 NAME                         READY   STATUS    RESTARTS   AGE
-pod/hello-69c9cf5648-92hc9   1/1     Running   0          52s
+pod/${{ values.name }}-69c9cf5648-92hc9   1/1     Running   0          52s
 
 NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
-service/hello   ClusterIP   10.96.28.147   <none>        80/TCP    52s
+service/${{ values.name }}   ClusterIP   10.96.28.147   <none>        80/TCP    52s
 
 NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/hello   1/1     1            1           53s
+deployment.apps/${{ values.name }}   1/1     1            1           53s
 
 NAME                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/hello-69c9cf5648   1         1         1       52s
+replicaset.apps/${{ values.name }}-69c9cf5648   1         1         1       52s
 ```
 
 
-### Debugging hello Pod
+### Debugging ${{ values.name }} Pod
 
 ```sh
-kubectl -n hello \
+kubectl -n ${{ values.name }} \
 debug -it \
 --container=debug-container \
 --image=alpine \
---target=hello \
-hello-69c9cf5648-92hc9
+--target=${{ values.name }} \
+${{ values.name }}-69c9cf5648-92hc9
 
-Targeting container "hello". If you don't see processes from this container it may be because the container runtime doesn't support this feature.
+Targeting container "${{ values.name }}". If you don't see processes from this container it may be because the container runtime doesn't support this feature.
 --profile=legacy is deprecated and will be removed in the future. It is recommended to explicitly specify a profile, for example "--profile=general".
 If you don't see a command prompt, try pressing enter.
 / # ps axww
 PID   USER     TIME  COMMAND
-    1 root      0:00 /hello server
+    1 root      0:00 /${{ values.name }} server
    16 root      0:00 /bin/sh
    26 root      0:00 ps axww
 / #
 / # apk add curl
 / # apk add jq
-/ # curl -s localhost:8080/hello | jq
+/ # curl -s localhost:8080/${{ values.name }} | jq
 {
-  "message": "Hello, World!"
+  "message": "${{ values.name }}, World!"
 }
 / # curl -s localhost:8080/version | jq
 {
@@ -173,15 +174,3 @@ The release is automatically called from the build  workflow using a dispatch ev
 ## Git Hooks scripts
 
 The use of git hooks has been documented in [doc/git-hooks.md](doc/git-hooks.md) file.
-
-## Git commands
-
-Git commands are implemented in NuShell. They are wrappers around regular git commands tha provide additional functionality.
-
-### Git Squash
-
-Usage TODO
-
-# Semantic Releases
-
-TODO
