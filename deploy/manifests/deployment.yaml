@@ -3,17 +3,20 @@ kind: Deployment
 metadata:
   name: ${{ values.name }}
   namespace: ${{ values.name }}
+  labels: 
+    entity-id: ${{values.name}}
+    app: ${{values.name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: ${{ values.name }}
-      app.kubernetes.io/name: ${{ values.name }}
   template:
     metadata:
       labels:
+        backstage.io/kubernetes-id: ${{ values.name }}
+        entity-id: ${{values.name}}
         app: ${{ values.name }}
-        app.kubernetes.io/name: ${{ values.name }}
     spec:
       serviceAccountName: ${{ values.name }}
       containers:

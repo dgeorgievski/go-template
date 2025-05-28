@@ -3,9 +3,11 @@ kind: Service
 metadata:
   name: ${{ values.name }}
   namespace: ${{ values.name }}
+  labels:
+    backstage.io/kubernetes-id: ${{ values.name }}
 spec:
   selector:
-    app.kubernetes.io/name: ${{ values.name }}
+    app: ${{ values.name }}
   ports:
     - protocol: TCP
       port: 80
