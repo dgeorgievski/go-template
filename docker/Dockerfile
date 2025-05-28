@@ -1,22 +1,17 @@
-FROM golang:1.24@sha256:30baaea08c5d1e858329c50f29fe381e9b7d7bced11a0f5f1f69a1504cdfbf5e AS builder
+FROM golang:1.24@sha256:6e4e2b3e2e2e6e7c8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e AS builder
 
 ARG GITHUB_REPO=github.com/${{ values.owner }}/${{ values.name }}
 ARG VERSION="dev"
 ARG COMMIT="none"
 ARG BUILD_UNIX_TIME=$(date +%s%M)
-RUN go env -w GOCACHE=/go-cache
-RUN go env -w GOMODCACHE=/gomod-cache
 
 WORKDIR /app
 
 COPY . .
 
-RUN --mount=type=cache,target=/gomod-cache\
-     go mod download
+RUN go mod download
 
-RUN --mount=type=cache,target=/gomod-cache \
-    --mount=type=cache,target=/gomod-cache \ 
-    CGO_ENABLED=0 \
+RUN CGO_ENABLED=0 \
     go build \
     -ldflags " -s -w \
         -X ${GITHUB_REPO}/pkg/version.VERSION=${VERSION} \

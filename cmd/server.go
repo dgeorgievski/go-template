@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/dgeorgievski/hello/pkg/version"
+	"github.com/${{ values.owner }}/${{ values.name }}/pkg/version"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
