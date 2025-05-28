@@ -21,7 +21,8 @@ spec:
       serviceAccountName: ${{ values.name }}
       containers:
       - name: ${{ values.name }}
-        image: ${{ values.owner }}/${{ values.name }}:0.1.0
+        # image: ${{ values.owner }}/${{ values.name }}:0.1.0
+        image: ${{ values.owner }}/go-app:0.1.0
         ports:
         - containerPort: 8080
         resources:
