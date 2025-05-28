@@ -1,4 +1,4 @@
-FROM golang:1.24@sha256:6e4e2b3e2e2e6e7c8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e AS builder
+FROM golang:1.24 AS builder
 
 ARG GITHUB_REPO=github.com/${{ values.owner }}/${{ values.name }}
 ARG VERSION="dev"
